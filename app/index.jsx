@@ -4,13 +4,13 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons'; //pa
 export default function Page() {
   return (
     <View style={styles.container}>
-    <ScrollView>
+    <ScrollView>                                                  {/* para mascroll down ang page */}
       <View style={styles.header}>
         <Text style={styles.home}>Home</Text>
         <Text style={styles.expire}>Expiring Soon</Text>
       </View>
 
-      {/* Example cards, replace with dynamic content as needed */}
+      {/* ilisanan pa ambot unsaon ni giatay lang */}
 
       <View>
         <Text style={styles.card}>
@@ -26,7 +26,7 @@ export default function Page() {
     </ScrollView>
     
 
-    {/* Centered Add Item button above footer */}
+    {/* add item button wako kasabot ani */}
     <View style={styles.additem}>
       <TouchableOpacity
         style={styles.additemButton}
