@@ -102,6 +102,7 @@ export default function Page() {
         {/* Header */}
         <View style={styles.header}>
           <View>
+            <Text style={styles.ecopan}>ecoPan v.1</Text>
             <Text style={styles.home}>Home</Text>
             <Text style={styles.expire}>Expiring Soon</Text>
           </View>
