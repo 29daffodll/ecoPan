@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import Page from "./app/index"; // Home screen
-import Inventory from "./app/inventory"; // Inventory screen
 import {
   ScrollView,
   StyleSheet,
@@ -14,11 +10,12 @@ import {
   Alert,
 } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-
-const Stack = createStackNavigator();
+import { Stack } from "expo-router";
 
 function Card({ name, expiry, onPress, isExpiringSoon, isExpired }) {
   return (
+
+
     <TouchableOpacity
       style={[
         styles.card,
@@ -41,12 +38,16 @@ function Card({ name, expiry, onPress, isExpiringSoon, isExpired }) {
         </Text>
       </View>
 
+      
       <MaterialIcons name="chevron-right" size={28} color="#03720df5" />
     </TouchableOpacity>
   );
 }
 
-export default function App() {
+export default function Page() {    
+
+
+
   const [items, setItems] = useState([
     { name: "Banana", expiry: "2025-09-21" },
     { name: "Milk", expiry: "2025-09-24" },
@@ -102,134 +103,127 @@ export default function App() {
   };
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home">
-          {(props) => (
-            <View style={styles.container}>
-              <ScrollView>
-                {/* Header */}
-                <View style={styles.header}>
-                  <View>
-                    <Text style={styles.ecopan}>ecoPan v.1</Text>
-                    <Text style={styles.home}>Home</Text>
-                    <Text style={styles.expire}>Expiring Soon</Text>
-                  </View>
+    
 
-                  {/* Expired items counter */}
-                  <View style={styles.expiredBox}>
-                    <MaterialIcons name="warning" size={22} color="#ff3b30" />
-                    <Text style={styles.expiredCount}>Expired: {expiredCount}</Text>
-                  </View>
-                </View>
+    <View style={styles.container}>
+      <ScrollView>
+        {/* Header */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.ecopan}>ecoPan v.1</Text>
+            <Text style={styles.home}>Home</Text>
+            <Text style={styles.expire}>Expiring Soon</Text>
+          </View>
 
-                {/* Render sorted cards */}
-                {items
-                  .sort((a, b) => new Date(a.expiry) - new Date(b.expiry))
-                  .map((item, idx) => (
-                    <Card
-                      key={idx}
-                      name={item.name}
-                      expiry={item.expiry}
-                      onPress={() => handleCardPress(item)}
-                      isExpiringSoon={isExpiringSoon(item.expiry)}
-                      isExpired={isExpired(item.expiry)}
-                    />
-                  ))}
-              </ScrollView>
+          {/* Expired items counter */}
+          <View style={styles.expiredBox}>
+            <MaterialIcons name="warning" size={22} color="#ff3b30" />
+            <Text style={styles.expiredCount}>Expired: {expiredCount}</Text>
+          </View>
+        </View>
 
-              {/* Add item button */}
-              <View style={styles.additem}>
-                <TouchableOpacity
-                  style={styles.additemButton}
-                  onPress={() => setModalVisible(true)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.additemText}>Add Item</Text>
-                </TouchableOpacity>
-              </View>
+        {/* magrender ug sort sa cards */}
+        {items
+          .sort((a, b) => new Date(a.expiry) - new Date(b.expiry))
+          .map((item, idx) => (
+            <Card
+              key={idx}
+              name={item.name}
+              expiry={item.expiry}
+              onPress={() => handleCardPress(item)}
+              isExpiringSoon={isExpiringSoon(item.expiry)}
+              isExpired={isExpired(item.expiry)}
+            />
+          ))}
+      </ScrollView>
 
-              {/* Modal add item */}
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
+      {/* Add item button */}
+      <View style={styles.additem}>
+        <TouchableOpacity
+          style={styles.additemButton}
+          onPress={() => setModalVisible(true)}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.additemText}>Add Item</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Modal add item */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Add New Item</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Item Name"
+              value={newItemName}
+              onChangeText={setNewItemName}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Expiry Date (YYYY-MM-DD)"
+              value={newItemExpiry}
+              onChangeText={setNewItemExpiry}
+            />
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: "#3b910a" }]}
+                onPress={addItem}
               >
-                <View style={styles.modalContainer}>
-                  <View style={styles.modalBox}>
-                    <Text style={styles.modalTitle}>Add New Item</Text>
+                <Text style={styles.modalButtonText}>Add</Text>
+              </TouchableOpacity>
 
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Item Name"
-                      value={newItemName}
-                      onChangeText={setNewItemName}
-                    />
-
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Expiry Date (YYYY-MM-DD)"
-                      value={newItemExpiry}
-                      onChangeText={setNewItemExpiry}
-                    />
-
-                    <View style={styles.modalButtons}>
-                      <TouchableOpacity
-                        style={[styles.modalButton, { backgroundColor: "#3b910a" }]}
-                        onPress={addItem}
-                      >
-                        <Text style={styles.modalButtonText}>Add</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={[styles.modalButton, { backgroundColor: "#ff3b30" }]}
-                        onPress={() => setModalVisible(false)}
-                      >
-                        <Text style={styles.modalButtonText}>Cancel</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              </Modal>
-
-              {/* Footer */}
-              <View style={styles.footer}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Home")}
-                  style={styles.iconButton}
-                >
-                  <MaterialIcons name="home" size={32} color="#000000be" />
-                  <Text>Home</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Inventory")} // Navigate to Inventory
-                  style={styles.iconButton}
-                >
-                  <MaterialCommunityIcons name="fridge" size={32} color="#000000be" />
-                  <Text>Inventory</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => console.log("Recipe Pressed")}
-                  style={styles.iconButton}
-                >
-                  <MaterialCommunityIcons name="chef-hat" size={32} color="#000000be" />
-                  <Text>Recipe</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => console.log("Community Pressed")}
-                  style={styles.iconButton}
-                >
-                  <MaterialIcons name="people" size={32} color="#000000be" />
-                  <Text>Community</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: "#ff3b30" }]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
             </View>
-          )}
-        </Stack.Screen>
-        <Stack.Screen name="Inventory" component={Inventory} />
-      </Stack.Navigator>
-    </NavigationContainer>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Footer wako kasabot sa touchable opacity aynalang na hilabti ah */}
+      <View style={styles.footer}>
+        <TouchableOpacity
+          onPress={() => console.log("Home Pressed")}
+          style={styles.iconButton}
+        >
+          <MaterialIcons name="home" size={32} color="#000000be" />
+          <Text>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => console.log("Inventory Pressed")}
+          style={styles.iconButton}
+        >
+          <MaterialCommunityIcons name="fridge" size={32} color="#000000be" />
+          <Text>Inventory</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => console.log("Recipe Pressed")}
+          style={styles.iconButton}
+        >
+          <MaterialCommunityIcons name="chef-hat" size={32} color="#000000be" />
+          <Text>Recipe</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => console.log("Community Pressed")}
+          style={styles.iconButton}
+        >
+          <MaterialIcons name="people" size={32} color="#000000be" />
+          <Text>Community</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 
